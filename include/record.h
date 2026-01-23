@@ -2,7 +2,11 @@
 #define GAME_H
 
 
-struct Record;
+#define MAX_FIELDS 10
+
+struct Record {
+    char *fields[MAX_FIELDS];
+};
 
 int record_init(struct Record *rec);
 int record_set_field(struct Record *rec, int index, const char *value);

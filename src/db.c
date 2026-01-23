@@ -4,11 +4,6 @@
 #include "error.h"
 #include "file.h"
 
-struct Database {
-    char *path;
-    int is_open; 
-};
-
 
 int db_open(struct Database *db, const char *path)
 {

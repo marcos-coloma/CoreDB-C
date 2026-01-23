@@ -1,7 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-struct Database;
+struct Database {
+    char *path;
+    int is_open; 
+};
 
 int db_open(struct Database *db, const char *path);
 int db_close(struct Database *db);
