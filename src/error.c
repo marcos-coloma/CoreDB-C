@@ -9,11 +9,11 @@ static char *current_error = NULL;
 static char *string_dup(const char *s) {
     if (!s) return NULL;
 
-#ifdef _MSC_VER
-    return _strdup(s);
-#else
-    return strdup(s);
-#endif
+    #ifdef _MSC_VER
+        return _strdup(s);
+    #else
+        return strdup(s);
+    #endif
 }
 
 static void error_free_current(void)
@@ -36,12 +36,8 @@ const char *error_get(void)
     return current_error;
 }
 
-void error_set(const char *msg) {
-    if (current_error) {
-        free(current_error);
-    }
+void error_set(const char *msg)
+{
+    error_free_current();
     current_error = string_dup(msg);
 }
-
-
-
