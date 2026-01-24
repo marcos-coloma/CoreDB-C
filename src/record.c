@@ -44,3 +44,20 @@ int record_set_field(struct Record *rec, int index, const char *value) {
 
     return 0;
 }
+
+
+
+const char *record_get_field(const struct Record *rec, int index)
+{
+    if (!rec) {
+        error_set("record_get_field: null record pointer");
+        return NULL;
+    }
+
+    if (index < 0 || index >= MAX_FIELDS) {
+        error_set("record_get_field: index out of range");
+        return NULL;
+    }
+
+    return rec->fields[index];
+}
