@@ -61,3 +61,18 @@ const char *record_get_field(const struct Record *rec, int index)
 
     return rec->fields[index];
 }
+
+
+void record_free(struct Record *rec)
+{
+    if (!rec) {
+        return;
+    }
+
+    for (int i = 0; i < MAX_FIELDS; i++) {
+        if (rec->fields[i]) {
+            free(rec->fields[i]);
+            rec->fields[i] = NULL;
+        }
+    }
+}
