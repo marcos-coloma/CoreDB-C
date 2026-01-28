@@ -52,3 +52,47 @@ int file_delete(const char *path)
     return 0;
 }
 
+/*---------------------------------------------*/
+
+int file_open_read(const char *path)
+{
+    if (!path) {
+        error_set("file_open_read: null path");
+        return -1;
+    }
+
+    int fd = open(path, O_RDONLY);
+    if (fd == -1) {
+        error_set("file_open_read: could not open file");
+        return -1;
+    }
+
+    return fd;
+}
+
+/*---------------------------------------------*/
+
+int file_open_write(const char *path)
+{
+    if (!path) {
+        error_set("file_open_write: null path");
+        return -1;
+    }
+
+    int fd = open(path, O_WRONLY | O_APPEND);
+    if (fd == -1) {
+        error_set("file_open_write: could not open file");
+        return -1;
+    }
+
+    return fd;
+}
+
+/*---------------------------------------------*/
+
+void file_close(int fd)
+{
+    if (fd >= 0) {
+        close(fd);
+    }
+}
