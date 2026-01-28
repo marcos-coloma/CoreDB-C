@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef RECORD_H
+#define RECORD_H
 
 
 #define MAX_FIELDS 10

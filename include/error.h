@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef ERROR_H
+#define ERROR_H
 
 
 void error_set(const char *msg);

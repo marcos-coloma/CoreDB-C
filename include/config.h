@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 int config_load(const char *path);
 const char *config_get_data_dir(void);

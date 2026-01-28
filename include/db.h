@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef DB_H
+#define DB_H
 
 struct Database {
     char *path;

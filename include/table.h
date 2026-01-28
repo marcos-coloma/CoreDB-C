@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef TABLE_H
+#define TABLE_H
 
 struct Table;
 struct Record;

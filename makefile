@@ -14,9 +14,6 @@
 CC = gcc
 
 # Compilation flags
-# -Wall -Wextra -Werror → warnings estrictos
-# -std=c11              → estándar moderno
-# -Iinclude             → headers
 CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
 
 # Object files

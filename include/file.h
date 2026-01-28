@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef FILE_H
+#define FILE_H
 
 
 int file_exists(const char *path);
