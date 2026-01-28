@@ -20,6 +20,7 @@ int db_open(struct Database *db, const char *path)
     }
 
     db->path = strdup(path);
+
     if (!db->path) {
         error_set("db_open: memory error");
         return -1;
