@@ -30,6 +30,7 @@ int db_open(struct Database *db, const char *path)
     return 0;
 }
 
+/*---------------------------------------------*/
 
 int db_close(struct Database *db)
 {

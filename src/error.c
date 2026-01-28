@@ -16,6 +16,8 @@ static char *string_dup(const char *s) {
     #endif
 }
 
+/*---------------------------------------------*/
+
 static void error_free_current(void)
 {
     if (current_error) {
@@ -31,10 +33,14 @@ void error_clear(void)
     error_free_current();
 }
 
+/*---------------------------------------------*/
+
 const char *error_get(void)
 {
     return current_error;
 }
+
+/*---------------------------------------------*/
 
 void error_set(const char *msg)
 {
