@@ -64,3 +64,75 @@ int table_close(struct Table *table)
 
     return 0;
 }
+
+
+/*------------------------------------------*/
+
+
+int table_insert(struct Table *table, const struct Record *rec)
+{
+    if (!table || !rec) {
+        error_set("table_insert: null table or record");
+        return -1;
+    }
+
+    char buffer[RECORD_SIZE];
+    memset(buffer, 0, RECORD_SIZE);
+
+    for (int i = 0; i < NUM_FIELDS; i++) {
+        const char *field = record_get_field(rec, i);
+        if (field) {
+            strncpy(buffer + i * MAX_FIELD_LEN, field, MAX_FIELD_LEN - 1);
+        }
+    }
+
+    // Escribir al archivo
+    ssize_t written = write(table->fd, buffer, RECORD_SIZE);
+    if (written != RECORD_SIZE) {
+        error_set("table_insert: failed to write record");
+        return -1;
+    }
+
+    table->record_count++;
+    return 0;
+}
+
+
+/*------------------------------------------*/
+
+
+
+int table_read(struct Table *table, int index, struct Record *out)
+{
+    if (!table || !out) {
+        error_set("table_read: null table or record");
+        return -1;
+    }
+
+    if (index < 0 || index >= table->record_count) {
+        error_set("table_read: index out of range");
+        return -1;
+    }
+
+    char buffer[RECORD_SIZE];
+    off_t offset = index * RECORD_SIZE;
+
+    if (lseek(table->fd, offset, SEEK_SET) < 0) {
+        error_set("table_read: failed to seek");
+        return -1;
+    }
+
+    ssize_t read_bytes = read(table->fd, buffer, RECORD_SIZE);
+    if (read_bytes != RECORD_SIZE) {
+        error_set("table_read: failed to read record");
+        return -1;
+    }
+
+    // Deserializar en el Record
+    record_init(out);
+    for (int i = 0; i < NUM_FIELDS; i++) {
+        record_set_field(out, i, buffer + i * MAX_FIELD_LEN);
+    }
+
+    return 0;
+}
