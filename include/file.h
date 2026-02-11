@@ -8,6 +8,8 @@ int file_delete(const char *path);
 
 int file_open_read(const char *path);
 int file_open_write(const char *path);
+int file_open_rw(const char *path);
+
 void file_close(int fd);
 
 

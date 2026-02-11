@@ -90,6 +90,24 @@ int file_open_write(const char *path)
 
 /*---------------------------------------------*/
 
+int file_open_rw(const char *path)
+{
+    if (!path) {
+        error_set("file_open_rw: null path");
+        return -1;
+    }
+
+    int fd = open(path, O_RDWR);
+    if (fd == -1) {
+        error_set("file_open_rw: could not open file");
+        return -1;
+    }
+
+    return fd;
+}
+
+/*---------------------------------------------*/
+
 void file_close(int fd)
 {
     if (fd >= 0) {

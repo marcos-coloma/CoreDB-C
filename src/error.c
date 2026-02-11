@@ -18,7 +18,6 @@ char *string_dup(const char *s)
     return copy;
 }
 
-
 /*---------------------------------------------*/
 
 static void error_free_current(void)
