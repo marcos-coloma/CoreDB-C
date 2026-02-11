@@ -16,13 +16,22 @@ CC = gcc
 # Compilation flags
 CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
 
-# Object files
-OBJ = build/main.o \
+# Src objects
+SRC_OBJ = \
 	build/db.o \
 	build/table.o \
 	build/record.o \
 	build/file.o \
 	build/error.o
+
+# App objects
+APP_OBJ = \
+	build/main.o \
+	build/menu.o \
+	build/input.o
+
+# All objects
+OBJ = $(ENGINE_OBJ) $(APP_OBJ)
 
 # Final executable
 TARGET = build/db_test
@@ -36,13 +45,13 @@ $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
 
 
-# Compile rule
+# Compile src files
 build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
-# main.c lives at root
-build/main.o: main.c
+# Compile app files
+build/%.o: app/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
