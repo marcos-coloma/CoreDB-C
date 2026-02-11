@@ -6,15 +6,18 @@ static char *current_error = NULL;
 
 /*---------------------------------------------*/
 
-static char *string_dup(const char *s) {
+char *string_dup(const char *s)
+{
     if (!s) return NULL;
 
-    #ifdef _MSC_VER
-        return _strdup(s);
-    #else
-        return strdup(s);
-    #endif
+    size_t len = strlen(s) + 1;
+    char *copy = malloc(len);
+    if (!copy) return NULL;
+
+    memcpy(copy, s, len);
+    return copy;
 }
+
 
 /*---------------------------------------------*/
 

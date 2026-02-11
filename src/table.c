@@ -85,8 +85,7 @@ int table_insert(struct Table *table, const struct Record *rec)
             strncpy(buffer + i * MAX_FIELD_LEN, field, MAX_FIELD_LEN - 1);
         }
     }
-
-    // Escribir al archivo
+    
     ssize_t written = write(table->fd, buffer, RECORD_SIZE);
     if (written != RECORD_SIZE) {
         error_set("table_insert: failed to write record");
@@ -128,7 +127,6 @@ int table_read(struct Table *table, int index, struct Record *out)
         return -1;
     }
 
-    // Deserializar en el Record
     record_init(out);
     for (int i = 0; i < NUM_FIELDS; i++) {
         record_set_field(out, i, buffer + i * MAX_FIELD_LEN);

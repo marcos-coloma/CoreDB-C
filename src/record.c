@@ -35,7 +35,7 @@ int record_set_field(struct Record *rec, int index, const char *value) {
 
 
     if (value) {
-        rec->fields[index] = strdup(value);
+        rec->fields[index] = string_dup(value);
         if (!rec->fields[index]) {
             error_set("record_set_field: memory error");
             return -1;

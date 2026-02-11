@@ -19,7 +19,8 @@ int db_open(struct Database *db, const char *path)
         }
     }
 
-    db->path = strdup(path);
+    db->path = string_dup(path);
+
 
     if (!db->path) {
         error_set("db_open: memory error");
