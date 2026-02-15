@@ -1,7 +1,6 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include <unistd.h>
 #include "record.h"
 
 #define MAX_FIELD_LEN 64
@@ -10,16 +9,18 @@
 
 typedef struct Table Table;
 
+/* lifecycle */
+Table *table_create(void);
+void table_destroy(Table *table);
 
-int table_open(struct Table *table, const char *name);
-int table_close(struct Table *table);
+/* open/close */
+int table_open(Table *table, const char *name);
+int table_close(Table *table);
 
-int table_insert(struct Table *table, const struct Record *rec);
-int table_read(struct Table *table, int index, struct Record *out);
-
-int table_count(const struct Table *table);
-
-int table_update(struct Table *table, int index, const struct Record *rec);
-int table_delete(struct Table *table, int index);
+/* CRUD */
+int table_insert(Table *table, const Record *rec);
+int table_read(Table *table, int index, Record *out);
+int table_update(Table *table, int index, const Record *rec);
+int table_delete(Table *table, int index);
 
 #endif

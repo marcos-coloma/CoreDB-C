@@ -13,6 +13,20 @@ struct Table {
     int record_count;
 };
 
+
+Table *table_create(void)
+{
+    Table *table = malloc(sizeof(Table));
+    if (!table)
+        return NULL;
+
+    table->fd = -1;
+    table->record_count = 0;
+    table->name[0] = '\0';
+
+    return table;
+}
+
 /*---------------------------------------------*/
 
 int table_open(struct Table *table, const char *name)
@@ -129,7 +143,6 @@ int table_read(struct Table *table, int index, struct Record *out)
         return -1;
     }
 
-    record_init(out);
     for (int i = 0; i < NUM_FIELDS; i++) {
         record_set_field(out, i, buffer + i * MAX_FIELD_LEN);
     }
@@ -210,4 +223,17 @@ int table_delete(struct Table *table, int index)
     }
 
     return 0;
+}
+
+/*------------------------------------------*/
+
+void table_destroy(Table *table)
+{
+    if (!table)
+        return;
+
+    if (table->fd >= 0)
+        table_close(table);
+
+    free(table);
 }
