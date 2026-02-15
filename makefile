@@ -14,7 +14,7 @@
 CC = gcc
 
 # Compilation flags
-CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
+CFLAGS = -Wall -Wextra -Werror -std=c11 -Ilib/include
 
 # Src objects
 SRC_OBJ = \
@@ -46,7 +46,7 @@ $(TARGET): $(OBJ)
 
 
 # Compile src files
-build/%.o: src/%.c
+build/%.o: lib/src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 

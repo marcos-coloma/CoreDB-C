@@ -188,7 +188,6 @@ int table_delete(struct Table *table, int index)
     char buffer[RECORD_SIZE];
     memset(buffer, 0, RECORD_SIZE);
 
-    /* Primer byte como flag de borrado */
     buffer[0] = 1; 
 
     off_t offset = index * RECORD_SIZE;
