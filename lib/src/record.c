@@ -7,22 +7,22 @@ struct Record {
     char *fields[MAX_FIELDS];
 };
 
-int record_init(struct Record *rec) {
-    if (!rec) {
-        error_set("record_init: null record pointer");
-        return -1;
-    }
 
-    for (int i = 0; i < MAX_FIELDS; i++) {
+Record *record_create(void)
+{
+    Record *rec = malloc(sizeof(Record));
+    if (!rec)
+        return NULL;
+
+    for (int i = 0; i < MAX_FIELDS; i++)
         rec->fields[i] = NULL;
-    }
 
-    return 0;
+    return rec;
 }
 
 /*---------------------------------------------*/
 
-int record_set_field(struct Record *rec, int index, const char *value) {
+int record_set_field(Record *rec, int index, const char *value) {
     if (!rec) {
         error_set("record_set_field: null record pointer");
         return -1;
@@ -53,7 +53,7 @@ int record_set_field(struct Record *rec, int index, const char *value) {
 
 /*---------------------------------------------*/
 
-const char *record_get_field(const struct Record *rec, int index)
+const char *record_get_field(const Record *rec, int index)
 {
     if (!rec) {
         error_set("record_get_field: null record pointer");
@@ -70,16 +70,14 @@ const char *record_get_field(const struct Record *rec, int index)
 
 /*---------------------------------------------*/
 
-void record_free(struct Record *rec)
+void record_destroy(Record *rec)
 {
-    if (!rec) {
+    if (!rec)
         return;
-    }
 
     for (int i = 0; i < MAX_FIELDS; i++) {
-        if (rec->fields[i]) {
-            free(rec->fields[i]);
-            rec->fields[i] = NULL;
-        }
+        free(rec->fields[i]);
     }
+
+    free(rec);
 }

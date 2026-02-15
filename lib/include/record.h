@@ -5,11 +5,11 @@
 
 typedef struct Record Record;
 
-int record_init(struct Record *rec);
-int record_set_field(struct Record *rec, int index, const char *value);
-const char *record_get_field(const struct Record *rec, int index);
-void record_free(struct Record *rec);
+Record *record_create(void);
+void record_destroy(Record *rec);
 
+int record_set_field(Record *rec, int index, const char *value);
+const char *record_get_field(const Record *rec, int index);
 
 
 #endif
