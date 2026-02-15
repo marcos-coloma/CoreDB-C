@@ -4,11 +4,35 @@
 #include "error.h"
 #include "file.h"
 
+struct Database {
+    char *path;
+    int is_open; 
+};
+
+
+Database *db_create(void)
+{
+    Database *db = malloc(sizeof(Database));
+    if (!db)
+        return NULL;
+
+    db->path = NULL;
+    db->is_open = 0;
+
+    return db;
+}
+
+/*---------------------------------------------*/
 
 int db_open(struct Database *db, const char *path)
 {
     if (!db || !path) {
         error_set("db_open: invalid arguments");
+        return -1;
+    }
+
+    if (db->is_open) {
+        error_set("db_open: database already open");
         return -1;
     }
 
@@ -20,7 +44,6 @@ int db_open(struct Database *db, const char *path)
     }
 
     db->path = string_dup(path);
-
 
     if (!db->path) {
         error_set("db_open: memory error");
@@ -47,3 +70,15 @@ int db_close(struct Database *db)
     return 0;
 }
 
+/*---------------------------------------------*/
+
+void db_destroy(Database *db)
+{
+    if (!db)
+        return;
+
+    if (db->is_open)
+        db_close(db);
+
+    free(db);
+}

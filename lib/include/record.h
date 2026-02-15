@@ -1,12 +1,9 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-
 #define MAX_FIELDS 10
 
-struct Record {
-    char *fields[MAX_FIELDS];
-};
+typedef struct Record Record;
 
 int record_init(struct Record *rec);
 int record_set_field(struct Record *rec, int index, const char *value);

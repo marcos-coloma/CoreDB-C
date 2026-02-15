@@ -7,6 +7,12 @@
 #include "error.h"
 #include "record.h"
 
+struct Table {
+    int fd;
+    char name[256];
+    int record_count;
+};
+
 /*---------------------------------------------*/
 
 int table_open(struct Table *table, const char *name)

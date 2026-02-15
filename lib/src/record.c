@@ -3,6 +3,10 @@
 #include "record.h"
 #include "error.h" 
 
+struct Record {
+    char *fields[MAX_FIELDS];
+};
+
 int record_init(struct Record *rec) {
     if (!rec) {
         error_set("record_init: null record pointer");

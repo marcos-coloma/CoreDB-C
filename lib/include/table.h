@@ -8,11 +8,8 @@
 #define NUM_FIELDS 9
 #define RECORD_SIZE (NUM_FIELDS * MAX_FIELD_LEN)
 
-struct Table {
-    int fd;
-    char name[256];
-    int record_count;
-};
+typedef struct Table Table;
+
 
 int table_open(struct Table *table, const char *name);
 int table_close(struct Table *table);
