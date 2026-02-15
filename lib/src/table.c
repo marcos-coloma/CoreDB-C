@@ -29,7 +29,7 @@ Table *table_create(void)
 
 /*---------------------------------------------*/
 
-int table_open(struct Table *table, const char *name)
+int table_open(Table *table, const char *name)
 {
     if (!table || !name) {
         error_set("table_open: null table or name");
@@ -51,7 +51,12 @@ int table_open(struct Table *table, const char *name)
     table->fd = fd;
 
     int fd_read = file_open_read(name);
-    if (fd_read < 0) return -1;
+    if (fd_read < 0) {
+        file_close(fd);
+        table->fd = -1;
+        return -1;
+    }
+
 
     off_t size = lseek(fd_read, 0, SEEK_END);
     file_close(fd_read);
@@ -68,7 +73,7 @@ int table_open(struct Table *table, const char *name)
 
 /*------------------------------------------*/
 
-int table_close(struct Table *table)
+int table_close(Table *table)
 {
     if (!table) {
         error_set("table_close: null table");
@@ -88,7 +93,7 @@ int table_close(struct Table *table)
 
 /*------------------------------------------*/
 
-int table_insert(struct Table *table, const struct Record *rec)
+int table_insert(Table *table, const Record *rec)
 {
     if (!table || !rec) {
         error_set("table_insert: null table or record");
@@ -101,10 +106,15 @@ int table_insert(struct Table *table, const struct Record *rec)
     for (int i = 0; i < NUM_FIELDS; i++) {
         const char *field = record_get_field(rec, i);
         if (field) {
-            strncpy(buffer + i * MAX_FIELD_LEN, field, MAX_FIELD_LEN - 1);
+            strncpy(buffer + 1 + i * MAX_FIELD_LEN, field, MAX_FIELD_LEN - 1);
         }
     }
     
+    if (lseek(table->fd, 0, SEEK_END) < 0) {
+    error_set("table_insert: failed to seek end");
+    return -1;
+}
+
     ssize_t written = write(table->fd, buffer, RECORD_SIZE);
     if (written != RECORD_SIZE) {
         error_set("table_insert: failed to write record");
@@ -117,7 +127,7 @@ int table_insert(struct Table *table, const struct Record *rec)
 
 /*------------------------------------------*/
 
-int table_read(struct Table *table, int index, struct Record *out)
+int table_read(Table *table, int index, Record *out)
 {
     if (!table || !out) {
         error_set("table_read: null table or record");
@@ -144,7 +154,7 @@ int table_read(struct Table *table, int index, struct Record *out)
     }
 
     for (int i = 0; i < NUM_FIELDS; i++) {
-        record_set_field(out, i, buffer + i * MAX_FIELD_LEN);
+        record_set_field(out, i, buffer + 1 + i * MAX_FIELD_LEN);
     }
 
     return 0;
@@ -152,7 +162,7 @@ int table_read(struct Table *table, int index, struct Record *out)
 
 /*------------------------------------------*/
 
-int table_update(struct Table *table, int index, const struct Record *rec)
+int table_update(Table *table, int index, const Record *rec)
 {
     if (!table || !rec) {
         error_set("table_update: null table or record");
@@ -170,7 +180,7 @@ int table_update(struct Table *table, int index, const struct Record *rec)
     for (int i = 0; i < NUM_FIELDS; i++) {
         const char *field = record_get_field(rec, i);
         if (field) {
-            strncpy(buffer + i * MAX_FIELD_LEN, field, MAX_FIELD_LEN - 1);
+            strncpy(buffer + 1 + i * MAX_FIELD_LEN, field, MAX_FIELD_LEN - 1);
         }
     }
 
@@ -192,7 +202,7 @@ int table_update(struct Table *table, int index, const struct Record *rec)
 
 /*------------------------------------------*/
 
-int table_delete(struct Table *table, int index)
+int table_delete(Table *table, int index)
 {
     if (!table) {
         error_set("table_delete: null table");
@@ -236,4 +246,14 @@ void table_destroy(Table *table)
         table_close(table);
 
     free(table);
+}
+
+/*------------------------------------------*/
+
+const char *table_get_name(const Table *table)
+{
+    if (!table)
+        return NULL;
+
+    return table->name;
 }

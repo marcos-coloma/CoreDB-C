@@ -5,7 +5,7 @@
 
 #define MAX_FIELD_LEN 64
 #define NUM_FIELDS 9
-#define RECORD_SIZE (NUM_FIELDS * MAX_FIELD_LEN)
+#define RECORD_SIZE (1 + NUM_FIELDS * MAX_FIELD_LEN)
 
 typedef struct Table Table;
 
@@ -22,5 +22,7 @@ int table_insert(Table *table, const Record *rec);
 int table_read(Table *table, int index, Record *out);
 int table_update(Table *table, int index, const Record *rec);
 int table_delete(Table *table, int index);
+
+const char *table_get_name(const Table *table);
 
 #endif
