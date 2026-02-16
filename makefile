@@ -27,8 +27,9 @@ SRC_OBJ = \
 # App objects
 APP_OBJ = \
 	build/main.o \
-	build/menu.o \
-	build/input.o
+	build/cli.o \
+	build/commands.o \
+	build/core.o \
 
 
 # All objects
