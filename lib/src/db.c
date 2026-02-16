@@ -160,6 +160,8 @@ int db_drop_table(Database *db, const char *name)
 
         if (strcmp(table_get_name(db->tables[i]), name) == 0) {
 
+            const char *path = table_get_name(db->tables[i]);
+            file_delete(path);
             table_destroy(db->tables[i]);
 
             for (size_t j = i; j < db->table_count - 1; j++)

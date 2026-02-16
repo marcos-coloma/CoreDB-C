@@ -50,23 +50,16 @@ int table_open(Table *table, const char *name)
 
     table->fd = fd;
 
-    int fd_read = file_open_read(name);
-    if (fd_read < 0) {
+    off_t size = lseek(fd, 0, SEEK_END);
+    if (size < 0) {
+        error_set("table_open: could not get file size");
         file_close(fd);
         table->fd = -1;
         return -1;
     }
 
-
-    off_t size = lseek(fd_read, 0, SEEK_END);
-    file_close(fd_read);
-
-    if (size < 0) {
-        error_set("table_open: could not get file size");
-        return -1;
-    }
-
     table->record_count = size / RECORD_SIZE;
+
 
     return 0;
 }
