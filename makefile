@@ -14,7 +14,7 @@
 CC = gcc
 
 # Compilation flags
-CFLAGS = -Wall -Wextra -Werror -std=c11 -Ilib/include
+CFLAGS = -Wall -Wextra -Werror -std=c11 -Ilib/include -Iapp/include
 
 # Src objects
 SRC_OBJ = \
@@ -30,8 +30,9 @@ APP_OBJ = \
 	build/menu.o \
 	build/input.o
 
+
 # All objects
-OBJ = $(ENGINE_OBJ) $(APP_OBJ)
+OBJ = $(SRC_OBJ) $(APP_OBJ)
 
 # Final executable
 TARGET = build/db_test
@@ -51,7 +52,7 @@ build/%.o: lib/src/%.c
 
 
 # Compile app files
-build/%.o: app/%.c
+build/%.o: app/src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
