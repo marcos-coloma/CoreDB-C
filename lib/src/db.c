@@ -189,3 +189,27 @@ int db_drop_table(Database *db, const char *name)
     return -1;
 }
 
+/*---------------------------------------------*/
+
+size_t db_table_count(Database *db)
+{
+    if (!db || !db->is_open)
+        return 0;
+
+    return db->table_count;
+}
+
+/*---------------------------------------------*/
+
+Table *db_table_at(Database *db, size_t index)
+{
+    if (!db || !db->is_open)
+        return NULL;
+
+    if (index >= db->table_count)
+        return NULL;
+
+    return db->tables[index];
+}
+
+

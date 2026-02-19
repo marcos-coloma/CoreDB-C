@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "commands.h"
-
+#include "core.h"
 
 static void handle_table_command(char *args)
 {
@@ -12,8 +12,8 @@ static void handle_table_command(char *args)
     }
 
     if (strcmp(action, "list") == 0) {
-        printf("Simulating: listing tables...\n");
-        // core_list_tables();
+        printf("listing tables\n");
+        core_list_tables();
     }
 
     else if (strcmp(action, "create") == 0) {
@@ -25,8 +25,8 @@ static void handle_table_command(char *args)
             return;
         }
 
-        printf("Simulating: Create table '%s'...\n", name);
-        // core_create_table(name);
+        printf("Create table '%s'\n", name);
+        core_create_table(name);
     }
 
     else if (strcmp(action, "drop") == 0) {
@@ -38,8 +38,8 @@ static void handle_table_command(char *args)
             return;
         }
 
-        printf("simulating: deleting table '%s'...\n", name);
-        // core_drop_table(name);
+        printf("drop table '%s'\n", name);
+        core_drop_table(name);
     }
     
     else {
@@ -66,6 +66,10 @@ void commands_execute(const char *input)
 
     if (strcmp(token1, "table") == 0) {
         char *args = strtok(NULL, "");
+        if (!args) {
+            printf("table: missing action\n");
+            return;
+        }
         handle_table_command(args);
         return;
     }
