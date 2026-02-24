@@ -257,3 +257,12 @@ const char *table_get_name(const Table *table)
 
     return table->name;
 }
+
+/*------------------------------------------*/
+
+int table_record_count(Table *table)
+{
+    if (!table)
+        return 0;
+    return table->record_count;
+}
