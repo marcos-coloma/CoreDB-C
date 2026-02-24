@@ -1,10 +1,10 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include "record.h"
 #include "schema.h"
 
 typedef struct Table Table;
+typedef struct Record Record;
 
 /* lifecycle */
 Table *table_create(void);

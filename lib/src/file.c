@@ -1,8 +1,13 @@
+#include <errno.h>
+#include <string.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+
 #include "file.h"
 #include "error.h"
+
 
 /*---------------------------------------------*/
 
@@ -27,6 +32,7 @@ int file_create(const char *path)
 
     int fd = open(path, O_CREAT | O_EXCL | O_WRONLY, 0644);
     if (fd == -1) {
+        fprintf(stderr, "file_create failed: %s\n", strerror(errno));
         error_set("file_create: could not create file");
         return -1;
     }

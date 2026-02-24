@@ -40,14 +40,17 @@ int table_open(Table *table, const char *name)
     strncpy(table->name, name, sizeof(table->name) - 1);
     table->name[sizeof(table->name) - 1] = '\0';
 
-    if (!file_exists(name)) {
-        if (file_create(name) != 0) {
+    char fullpath[512];
+    snprintf(fullpath, sizeof(fullpath), "./data/%s.tbl", name);
+
+    if (!file_exists(fullpath)) {
+        if (file_create(fullpath) != 0)
             return -1;
-        }
     }
 
-    int fd = file_open_rw(name);
-    if (fd < 0) return -1;
+    int fd = file_open_rw(fullpath);
+    if (fd < 0)
+        return -1;
 
     table->fd = fd;
 
@@ -61,10 +64,8 @@ int table_open(Table *table, const char *name)
 
     table->record_count = size / RECORD_SIZE;
 
-
     return 0;
 }
-
 /*------------------------------------------*/
 
 int table_close(Table *table)

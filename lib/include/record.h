@@ -1,7 +1,6 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include "table.h"
 #include "schema.h"
 
 typedef struct Record Record;

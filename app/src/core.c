@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "core.h"
 #include "db.h"
+#include "record.h"
 #include "table.h"
 #include "error.h"
 
@@ -160,6 +161,36 @@ int core_read_record(int index)
 
     record_destroy(rec);
     return 0;
+}
+
+/*---------------------------------------------*/
+
+int core_update_record(int index, char **fields, int field_count)
+{
+    if (!g_active_table) {
+        printf("no table selected\n");
+        return -1;
+    }
+
+    if (field_count > NUM_FIELDS) {
+        printf("too many fields (max %d)\n", NUM_FIELDS);
+        return -1;
+    }
+
+    Record *rec = record_create();
+    if (!rec)
+        return -1;
+
+    for (int i = 0; i < field_count; i++)
+        record_set_field(rec, i, fields[i]);
+
+    int result = table_update(g_active_table, index, rec);
+    record_destroy(rec);
+
+    if (result != 0)
+        printf("%s\n", error_get());
+
+    return result;
 }
 
 /*---------------------------------------------*/

@@ -113,7 +113,7 @@ int db_create_table(Database *db, const char *name)
     char fullpath[512];
     snprintf(fullpath, sizeof(fullpath), "%s/%s.tbl", db->base_path, name);
 
-    if (table_open(table, fullpath) != 0) {
+    if (table_open(table, name) != 0) {
         table_destroy(table);
         return -1;
     }

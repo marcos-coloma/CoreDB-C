@@ -70,44 +70,54 @@ static void handle_record_command(char *args)
     }
 
     if (strcmp(action, "insert") == 0) {
-
         char *fields[NUM_FIELDS];
         int count = 0;
-
         char *token;
         while ((token = strtok(NULL, " ")) != NULL && count < NUM_FIELDS) {
             fields[count++] = token;
         }
-
         core_insert_record(fields, count);
     }
 
     else if (strcmp(action, "read") == 0) {
-
         char *index_str = strtok(NULL, " ");
         if (!index_str) {
             printf("record read: missing index\n");
             return;
         }
-
         int index = atoi(index_str);
         core_read_record(index);
     }
 
-    else if (strcmp(action, "delete") == 0) {
+    else if (strcmp(action, "update") == 0) {
+        char *index_str = strtok(NULL, " ");
+        if (!index_str) {
+            printf("record update: missing index\n");
+            return;
+        }
+        int index = atoi(index_str);
 
+        char *fields[NUM_FIELDS];
+        int count = 0;
+        char *token;
+        while ((token = strtok(NULL, " ")) != NULL && count < NUM_FIELDS) {
+            fields[count++] = token;
+        }
+
+        core_update_record(index, fields, count);
+    }
+
+    else if (strcmp(action, "delete") == 0) {
         char *index_str = strtok(NULL, " ");
         if (!index_str) {
             printf("record delete: missing index\n");
             return;
         }
-
         int index = atoi(index_str);
         core_delete_record(index);
     }
 
     else if (strcmp(action, "list") == 0) {
-
         core_list_records();
     }
 
@@ -115,7 +125,6 @@ static void handle_record_command(char *args)
         printf("unknown record action: %s\n", action);
     }
 }
-
 void commands_execute(const char *input)
 {
     char buffer[256];
