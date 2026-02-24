@@ -1,7 +1,8 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#define MAX_FIELDS 10
+#include "table.h"
+#include "schema.h"
 
 typedef struct Record Record;
 

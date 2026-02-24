@@ -2,10 +2,7 @@
 #define TABLE_H
 
 #include "record.h"
-
-#define MAX_FIELD_LEN 64
-#define NUM_FIELDS 9
-#define RECORD_SIZE (1 + NUM_FIELDS * MAX_FIELD_LEN)
+#include "schema.h"
 
 typedef struct Table Table;
 

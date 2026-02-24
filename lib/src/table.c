@@ -133,6 +133,7 @@ int table_read(Table *table, int index, Record *out)
         return -1;
     }
 
+
     char buffer[RECORD_SIZE];
     off_t offset = index * RECORD_SIZE;
 
@@ -144,6 +145,11 @@ int table_read(Table *table, int index, Record *out)
     ssize_t read_bytes = read(table->fd, buffer, RECORD_SIZE);
     if (read_bytes != RECORD_SIZE) {
         error_set("table_read: failed to read record");
+        return -1;
+    }
+
+    if (buffer[0] == 1) {
+        error_set("record deleted");
         return -1;
     }
 

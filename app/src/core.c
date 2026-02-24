@@ -5,6 +5,7 @@
 #include "error.h"
 
 static Database *g_db = NULL;
+static Table *g_active_table = NULL;
 
 int core_init(const char *path)
 {

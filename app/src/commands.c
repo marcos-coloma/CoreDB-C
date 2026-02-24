@@ -74,5 +74,11 @@ void commands_execute(const char *input)
         return;
     }
 
+    if (strcmp(token1, "exit") == 0 ||
+        strcmp(token1, "quit") == 0) {
+        core_shutdown();
+        exit(0);
+    }
+
     printf("unknown command: %s\n", token1);
 }

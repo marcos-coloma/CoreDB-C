@@ -4,7 +4,7 @@
 #include "error.h" 
 
 struct Record {
-    char *fields[MAX_FIELDS];
+    char *fields[NUM_FIELDS];
 };
 
 
@@ -14,7 +14,7 @@ Record *record_create(void)
     if (!rec)
         return NULL;
 
-    for (int i = 0; i < MAX_FIELDS; i++)
+    for (int i = 0; i < NUM_FIELDS; i++)
         rec->fields[i] = NULL;
 
     return rec;
@@ -28,7 +28,7 @@ int record_set_field(Record *rec, int index, const char *value) {
         return -1;
     }
 
-    if (index < 0 || index >= MAX_FIELDS) {
+    if (index < 0 || index >= NUM_FIELDS) {
         error_set("record_set_field: index out of range");
         return -1;
     }
@@ -60,7 +60,7 @@ const char *record_get_field(const Record *rec, int index)
         return NULL;
     }
 
-    if (index < 0 || index >= MAX_FIELDS) {
+    if (index < 0 || index >= NUM_FIELDS) {
         error_set("record_get_field: index out of range");
         return NULL;
     }
@@ -75,7 +75,7 @@ void record_destroy(Record *rec)
     if (!rec)
         return;
 
-    for (int i = 0; i < MAX_FIELDS; i++) {
+    for (int i = 0; i < NUM_FIELDS; i++) {
         free(rec->fields[i]);
     }
 
