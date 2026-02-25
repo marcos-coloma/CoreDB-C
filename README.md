@@ -25,3 +25,5 @@ nota: si no podes compilar o ejecutar, fijate el makefile
 - record update <index> <fields...>	Modifica los datos de un registro existente.
 - record delete <index> Marca un registro para su eliminación y libera su acceso.
 - exit Cierra la base de datos y finaliza la sesión.
+
+este es un proyecto que tiene como finalidad el aprendizaje.
