@@ -13,6 +13,8 @@ Para compilar el proyecto:
 Para ejecutar la aplicación:
 - ./build/db_test
 
+nota: si no podes compilar o ejecutar, fijate el makefile
+
 # Comandos Disponibles:
 table list	Lista todas las tablas detectadas en el sistema.
 table create <name>	Crea una nueva tabla física y en memoria.
