@@ -39,6 +39,7 @@ int db_open(Database *db, const char *path)
     db->base_path = string_dup(path);
     if (!db->base_path) return -1;
 
+    db->is_open = 1;
 
     DIR *dir = opendir(path);
     if (dir) {
@@ -62,7 +63,6 @@ int db_open(Database *db, const char *path)
         closedir(dir);
     }
 
-    db->is_open = 1;
     return 0;
 }
 
