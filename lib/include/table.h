@@ -3,6 +3,9 @@
 
 #include "schema.h"
 
+struct Database;
+typedef struct Database Database;
+
 typedef struct Table Table;
 typedef struct Record Record;
 
@@ -11,7 +14,7 @@ Table *table_create(void);
 void table_destroy(Table *table);
 
 /* open/close */
-int table_open(Table *table, const char *name);
+int table_open(Table *table, struct Database *db, const char *name);
 int table_close(Table *table);
 
 /* CRUD */

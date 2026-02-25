@@ -17,7 +17,7 @@ void cli_start(void)
             break;
         }
 
-        input[strcspn(input, "\n")] = '\0';
+        input[strcspn(input, "\r\n")] = '\0';
 
         if (strlen(input) == 0)
             continue;

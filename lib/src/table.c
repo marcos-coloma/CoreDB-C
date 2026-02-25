@@ -3,6 +3,7 @@
 #include <string.h>
 #include <fcntl.h>
 
+#include "db.h"
 #include "table.h"
 #include "file.h"
 #include "error.h"
@@ -30,39 +31,27 @@ Table *table_create(void)
 
 /*---------------------------------------------*/
 
-int table_open(Table *table, const char *name)
+int table_open(Table *table, Database *db, const char *name)
 {
-    if (!table || !name) {
-        error_set("table_open: null table or name");
-        return -1;
-    }
+    if (!table || !name || !db) return -1;
 
     strncpy(table->name, name, sizeof(table->name) - 1);
-    table->name[sizeof(table->name) - 1] = '\0';
-
+    
     char fullpath[512];
-    snprintf(fullpath, sizeof(fullpath), "./data/%s.tbl", name);
+    snprintf(fullpath, sizeof(fullpath), "%s/%s.tbl", db_get_base_path(db), name);
 
     if (!file_exists(fullpath)) {
-        if (file_create(fullpath) != 0)
+        if (file_create(fullpath) != 0) {
             return -1;
+        }
     }
 
     int fd = file_open_rw(fullpath);
-    if (fd < 0)
-        return -1;
+    if (fd < 0) return -1;
 
     table->fd = fd;
-
     off_t size = lseek(fd, 0, SEEK_END);
-    if (size < 0) {
-        error_set("table_open: could not get file size");
-        file_close(fd);
-        table->fd = -1;
-        return -1;
-    }
-
-    table->record_count = size / RECORD_SIZE;
+    table->record_count = (size < 0) ? 0 : (size / RECORD_SIZE);
 
     return 0;
 }

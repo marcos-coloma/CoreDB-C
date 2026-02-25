@@ -5,9 +5,25 @@
 #include "commands.h"
 #include "core.h"
 #include "schema.h"
+#include "error.h"
+
+static int ensure_db_initialized(void) {
+    if (!core_is_initialized()) {
+        if (core_init("./data") != 0) {
+            fprintf(stderr, "Error al inicializar la base de datos: %s\n", error_get());
+            return -1;
+        }
+    }
+    return 0;
+}
+
+/*---------------------------------------------*/
 
 static void handle_table_command(char *args)
 {
+    if (ensure_db_initialized() != 0)
+        return;
+
     char *action = strtok(args, " ");
     if (!action) {
         printf("table: missing action\n");
@@ -20,49 +36,38 @@ static void handle_table_command(char *args)
     }
 
     else if (strcmp(action, "create") == 0) {
-
         char *name = strtok(NULL, " ");
-
-        if (!name) {
-            printf("table create: missing table name\n");
-            return;
-        }
-
-        printf("Create table '%s'\n", name);
+        if (!name) { printf("table create: missing table name\n"); return; }
         core_create_table(name);
+        printf("Create table '%s'\n", name);
     }
 
     else if (strcmp(action, "drop") == 0) {
-
         char *name = strtok(NULL, " ");
-
-        if (!name) {
-            printf("table drop: missing table name\n");
-            return;
+        if (!name) { printf("table drop: missing table name\n"); return; }
+        if (core_drop_table(name) == 0) {
+            printf("drop table '%s'\n", name);
         }
-
-        printf("drop table '%s'\n", name);
-        core_drop_table(name);
     }
 
     else if (strcmp(action, "use") == 0) {
         char *name = strtok(NULL, " ");
-
-        if (!name) {
-            printf("table use: missing table name\n");
-            return;
-        }
-
+        if (!name) { printf("table use: missing table name\n"); return; }
         core_use_table(name);
     }
-    
+
     else {
         printf("unknown table action: %s\n", action);
     }
 }
 
+/*---------------------------------------------*/
+
 static void handle_record_command(char *args)
 {
+    if (ensure_db_initialized() != 0)
+    return;
+
     char *action = strtok(args, " ");
     if (!action) {
         printf("record: missing action\n");
@@ -125,6 +130,9 @@ static void handle_record_command(char *args)
         printf("unknown record action: %s\n", action);
     }
 }
+
+/*---------------------------------------------*/
+
 void commands_execute(const char *input)
 {
     char buffer[256];

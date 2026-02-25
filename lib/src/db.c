@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
+
 #include "db.h"
 #include "error.h"
 #include "file.h"
@@ -32,20 +34,32 @@ Database *db_create(void)
 
 int db_open(Database *db, const char *path)
 {
-    if (!db || !path) {
-        error_set("db_open: invalid arguments");
-        return -1;
-    }
-
-    if (db->is_open) {
-        error_set("db_open: database already open");
-        return -1;
-    }
+    if (!db || !path || db->is_open) return -1;
 
     db->base_path = string_dup(path);
-    if (!db->base_path) {
-        error_set("db_open: memory error");
-        return -1;
+    if (!db->base_path) return -1;
+
+
+    DIR *dir = opendir(path);
+    if (dir) {
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+
+            char *ext = strrchr(entry->d_name, '.');
+            if (ext && strcmp(ext, ".tbl") == 0) {
+                
+                char table_name[256];
+                size_t len = ext - entry->d_name;
+
+                if (len < sizeof(table_name)) {
+                    strncpy(table_name, entry->d_name, len);
+                    table_name[len] = '\0';
+
+                    db_create_table(db, table_name);
+                }
+            }
+        }
+        closedir(dir);
     }
 
     db->is_open = 1;
@@ -113,16 +127,12 @@ int db_create_table(Database *db, const char *name)
     char fullpath[512];
     snprintf(fullpath, sizeof(fullpath), "%s/%s.tbl", db->base_path, name);
 
-    if (table_open(table, name) != 0) {
+    if (table_open(table, db, name) != 0) {
         table_destroy(table);
         return -1;
     }
 
-    Table **new_tables = realloc(
-        db->tables,
-        sizeof(Table *) * (db->table_count + 1)
-    );
-
+    Table **new_tables = realloc(db->tables, sizeof(Table *) * (db->table_count + 1));
     if (!new_tables) {
         table_destroy(table);
         return -1;
@@ -154,41 +164,41 @@ Table *db_get_table(Database *db, const char *name)
 
 int db_drop_table(Database *db, const char *name)
 {
-    if (!db || !name)
-        return -1;
+    if (!db || !name) return -1;
 
     for (size_t i = 0; i < db->table_count; i++) {
-
         if (strcmp(table_get_name(db->tables[i]), name) == 0) {
+            char fullpath[512];
+            snprintf(fullpath, sizeof(fullpath), "%s/%s.tbl", db->base_path, name);
 
-            const char *path = table_get_name(db->tables[i]);
-            file_delete(path);
             table_destroy(db->tables[i]);
+
+            if (file_delete(fullpath) != 0) {
+                error_set("db_drop_table: could not delete file");
+                return -1;
+            }
 
             for (size_t j = i; j < db->table_count - 1; j++)
                 db->tables[j] = db->tables[j + 1];
 
             db->table_count--;
-            
+
             if (db->table_count == 0) {
                 free(db->tables);
                 db->tables = NULL;
             } 
-
             else {
-                Table **new_tables = realloc(db->tables,
-                    sizeof(Table *) * db->table_count);
-                if (new_tables)
-                    db->tables = new_tables;
+                Table **new_tables = realloc(db->tables, sizeof(Table *) * db->table_count);
+                if (new_tables) db->tables = new_tables;
             }
 
             return 0;
         }
     }
 
+    error_set("db_drop_table: table not found");
     return -1;
 }
-
 /*---------------------------------------------*/
 
 size_t db_table_count(Database *db)
@@ -212,4 +222,9 @@ Table *db_table_at(Database *db, size_t index)
     return db->tables[index];
 }
 
+/*---------------------------------------------*/
 
+const char *db_get_base_path(Database *db) {
+    if (!db) return NULL;
+    return db->base_path;
+}

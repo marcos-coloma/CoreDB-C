@@ -1,5 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <direct.h>
+#include <sys/stat.h>
+
 #include "core.h"
 #include "db.h"
 #include "record.h"
@@ -9,14 +14,28 @@
 static Database *g_db = NULL;
 static Table *g_active_table = NULL;
 
+
+int core_is_initialized(void) {
+    return g_db != NULL;
+}
+
+/*---------------------------------------------*/
+
 int core_init(const char *path)
 {
-    if (g_db)
-        return -1;
+    if (g_db) 
+        return 0; 
 
     g_db = db_create();
+    
     if (!g_db)
         return -1;
+
+    #ifdef _WIN32
+        _mkdir(path);
+    #else
+        mkdir(path, 0777);
+    #endif
 
     if (db_open(g_db, path) != 0) {
         fprintf(stderr, "%s\n", error_get());
@@ -56,26 +75,21 @@ int core_create_table(const char *name)
 }
 
 /*---------------------------------------------*/
-
 int core_drop_table(const char *name)
 {
-    if (!g_db)
-        return -1;
+    if (!g_db) return -1;
 
     if (db_drop_table(g_db, name) != 0) {
-        fprintf(stderr, "table not found\n");
+        fprintf(stderr, "%s\n", error_get()); 
         return -1;
     }
-
     return 0;
 }
 
 /*---------------------------------------------*/
 
-void core_list_tables(void)
-{
-    if (!g_db)
-        return;
+void core_list_tables(void) {
+    if (!g_db) return;
 
     size_t count = db_table_count(g_db);
 
@@ -95,12 +109,10 @@ int core_use_table(const char *name)
 
     Table *table = db_get_table(g_db, name);
     if (!table) {
-        printf("table not found\n");
         return -1;
     }
 
     g_active_table = table;
-    printf("using table '%s'\n", name);
     return 0;
 }
 
@@ -109,12 +121,10 @@ int core_use_table(const char *name)
 int core_insert_record(char **fields, int field_count)
 {
     if (!g_active_table) {
-        printf("no table selected\n");
         return -1;
     }
 
     if (field_count > NUM_FIELDS) {
-        printf("too many fields (max %d)\n", NUM_FIELDS);
         return -1;
     }
 
@@ -139,7 +149,6 @@ int core_insert_record(char **fields, int field_count)
 int core_read_record(int index)
 {
     if (!g_active_table) {
-        printf("no table selected\n");
         return -1;
     }
 
@@ -148,7 +157,6 @@ int core_read_record(int index)
         return -1;
 
     if (table_read(g_active_table, index, rec) != 0) {
-        printf("%s\n", error_get());
         record_destroy(rec);
         return -1;
     }
@@ -168,12 +176,10 @@ int core_read_record(int index)
 int core_update_record(int index, char **fields, int field_count)
 {
     if (!g_active_table) {
-        printf("no table selected\n");
         return -1;
     }
 
     if (field_count > NUM_FIELDS) {
-        printf("too many fields (max %d)\n", NUM_FIELDS);
         return -1;
     }
 
@@ -198,12 +204,10 @@ int core_update_record(int index, char **fields, int field_count)
 int core_delete_record(int index)
 {
     if (!g_active_table) {
-        printf("no table selected\n");
         return -1;
     }
 
     if (table_delete(g_active_table, index) != 0) {
-        printf("%s\n", error_get());
         return -1;
     }
 
@@ -215,7 +219,6 @@ int core_delete_record(int index)
 void core_list_records(void)
 {
     if (!g_active_table) {
-        printf("no table selected\n");
         return;
     }
 
@@ -228,8 +231,6 @@ void core_list_records(void)
             return;
 
         if (table_read(g_active_table, i, rec) == 0) {
-
-            printf("record %d:\n", i);
 
             for (int j = 0; j < NUM_FIELDS; j++) {
                 const char *value = record_get_field(rec, j);

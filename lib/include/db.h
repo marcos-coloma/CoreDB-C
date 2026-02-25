@@ -18,4 +18,6 @@ int db_close(Database *db);
 size_t db_table_count(Database *db);
 Table  *db_table_at(Database *db, size_t index);
 
+const char *db_get_base_path(Database *db);
+
 #endif
