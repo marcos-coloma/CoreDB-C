@@ -16,12 +16,12 @@ Para ejecutar la aplicación:
 nota: si no podes compilar o ejecutar, fijate el makefile
 
 # Comandos Disponibles:
-table list	Lista todas las tablas detectadas en el sistema.
-table create <name>	Crea una nueva tabla física y en memoria.
-table drop <name>	Elimina la tabla y su archivo asociado.
-record insert <fields...>	Inserta un nuevo registro en la tabla activa.
-record read <index>	Recupera un registro específico por su posición.
-record update <index> <fields...>	Modifica los datos de un registro existente.
+- table list	Lista todas las tablas detectadas en el sistema.
+- table create <name>	Crea una nueva tabla física y en memoria.
+- table drop <name>	Elimina la tabla y su archivo asociado.
+- record insert <fields...>	Inserta un nuevo registro en la tabla activa.
+- record read <index>	Recupera un registro específico por su posición.
+- record update <index> <fields...>	Modifica los datos de un registro existente.
 
 
 
