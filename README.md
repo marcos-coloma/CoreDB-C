@@ -1,5 +1,7 @@
 # CoreDB-C
 
+Este es un proyecto de aprendizaje hecho en C
+
 Un motor de base de datos relacional ligero, diseñado para el almacenamiento persistente de registros en formato binario. El proyecto implementa la gestión manual de memoria, manipulación de archivos a bajo nivel y una arquitectura desacoplada entre el nucleo (core) y la interfaz de usuario (CLI).
 
 Está dividido en dos partes:
@@ -26,4 +28,3 @@ nota: si no podes compilar o ejecutar, fijate el makefile
 - record delete <index> Marca un registro para su eliminación y libera su acceso.
 - exit Cierra la base de datos y finaliza la sesión.
 
-este es un proyecto que tiene como finalidad el aprendizaje.
